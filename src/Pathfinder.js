@@ -3,6 +3,8 @@ import Node from './Node/Node'
 
 import { AStar } from './Algorithms/Astar'
 import { bfs } from './Algorithms/bfs'
+import {dfs} from './Algorithms/dfs'
+import {dijkstra} from './Algorithms/dijkstra'
 import './Pathfinder.css'
 
 export default class PathfindingVisualizer extends Component {
@@ -325,6 +327,12 @@ export default class PathfindingVisualizer extends Component {
         case 'BFS':
           visitedNodesInOrder = bfs(grid, startNode, endNode)
           break
+        case 'DFS':
+          visitedNodesInOrder = dfs(grid, startNode, endNode)
+          break
+          case 'Dijkstra':
+            visitedNodesInOrder = dijkstra(grid, startNode, endNode)
+            break  
         default:
           // should never get here
           break
@@ -418,6 +426,20 @@ export default class PathfindingVisualizer extends Component {
             onClick={() => this.visualize('BFS')}
           >
             BFS
+          </button>
+          <button
+            type='button'
+            className='btn btn-primary'
+            onClick={() => this.visualize('DFS')}
+          >
+            DFS
+          </button>
+          <button
+            type='button'
+            className='btn btn-primary'
+            onClick={() => this.visualize('Dijkstra')}
+          >
+            Dijkstra
           </button>
         </div>
         <table
