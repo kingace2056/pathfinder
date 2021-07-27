@@ -1,15 +1,15 @@
-import React, { Component } from 'react'
-import Node from './Node/Node'
+import React, { Component } from 'react';
+import Node from './Node/Node';
 
-import { AStar } from './Algorithms/Astar'
-import { bfs } from './Algorithms/bfs'
-import {dfs} from './Algorithms/dfs'
-import {dijkstra} from './Algorithms/dijkstra'
-import './Pathfinder.css'
+import { AStar } from './Algorithms/Astar';
+import { bfs } from './Algorithms/bfs';
+import { dfs } from './Algorithms/dfs';
+import { dijkstra } from './Algorithms/dijkstra';
+import './Pathfinder.css';
 
 export default class PathfindingVisualizer extends Component {
   constructor() {
-    super()
+    super();
     this.state = {
       grid: [],
       START_NODE_ROW: 5,
@@ -28,35 +28,35 @@ export default class PathfindingVisualizer extends Component {
       currRow: 0,
       currCol: 0,
       isDesktopView: true,
-    }
+    };
 
-    this.handleMouseDown = this.handleMouseDown.bind(this)
-    this.handleMouseLeave = this.handleMouseLeave.bind(this)
-    this.toggleIsRunning = this.toggleIsRunning.bind(this)
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleMouseLeave = this.handleMouseLeave.bind(this);
+    this.toggleIsRunning = this.toggleIsRunning.bind(this);
   }
 
   componentDidMount() {
-    const grid = this.getInitialGrid()
-    this.setState({ grid })
+    const grid = this.getInitialGrid();
+    this.setState({ grid });
   }
 
   toggleIsRunning() {
-    this.setState({ isRunning: !this.state.isRunning })
+    this.setState({ isRunning: !this.state.isRunning });
   }
   // mobile and desktop view not to be done in our project
 
   toggleView() {
     if (!this.state.isRunning) {
-      this.clearGrid()
-      this.clearWalls()
-      const isDesktopView = !this.state.isDesktopView
-      let grid
+      this.clearGrid();
+      this.clearWalls();
+      const isDesktopView = !this.state.isDesktopView;
+      let grid;
       if (isDesktopView) {
         grid = this.getInitialGrid(
           this.state.ROW_COUNT,
-          this.state.COLUMN_COUNT,
-        )
-        this.setState({ isDesktopView, grid })
+          this.state.COLUMN_COUNT
+        );
+        this.setState({ isDesktopView, grid });
       } else {
         if (
           this.state.START_NODE_ROW > this.state.MOBILE_ROW_COUNT ||
@@ -64,13 +64,13 @@ export default class PathfindingVisualizer extends Component {
           this.state.START_NODE_COL > this.state.MOBILE_COLUMN_COUNT ||
           this.state.FINISH_NODE_COL > this.state.MOBILE_COLUMN_COUNT
         ) {
-          alert('Start & Finish Nodes Must Be within 10 Rows x 20 Columns')
+          alert('Start & Finish Nodes Must Be within 10 Rows x 20 Columns');
         } else {
           grid = this.getInitialGrid(
             this.state.MOBILE_ROW_COUNT,
-            this.state.MOBILE_COLUMN_COUNT,
-          )
-          this.setState({ isDesktopView, grid })
+            this.state.MOBILE_COLUMN_COUNT
+          );
+          this.setState({ isDesktopView, grid });
         }
       }
     }
@@ -79,18 +79,18 @@ export default class PathfindingVisualizer extends Component {
   /******************** Set up the initial grid ********************/
   getInitialGrid = (
     rowCount = this.state.ROW_COUNT,
-    colCount = this.state.COLUMN_COUNT,
+    colCount = this.state.COLUMN_COUNT
   ) => {
-    const initialGrid = []
+    const initialGrid = [];
     for (let row = 0; row < rowCount; row++) {
-      const currentRow = []
+      const currentRow = [];
       for (let col = 0; col < colCount; col++) {
-        currentRow.push(this.createNode(row, col))
+        currentRow.push(this.createNode(row, col));
       }
-      initialGrid.push(currentRow)
+      initialGrid.push(currentRow);
     }
-    return initialGrid
-  }
+    return initialGrid;
+  };
 
   createNode = (row, col) => {
     return {
@@ -109,8 +109,8 @@ export default class PathfindingVisualizer extends Component {
       isWall: false,
       previousNode: null,
       isNode: true,
-    }
-  }
+    };
+  };
 
   /******************** Control mouse events ********************/
   handleMouseDown(row, col) {
@@ -125,7 +125,7 @@ export default class PathfindingVisualizer extends Component {
             isStartNode: true,
             currRow: row,
             currCol: col,
-          })
+          });
         } else if (
           document.getElementById(`node-${row}-${col}`).className ===
           'node node-finish'
@@ -135,19 +135,19 @@ export default class PathfindingVisualizer extends Component {
             isEndNode: true,
             currRow: row,
             currCol: col,
-          })
+          });
         } else {
-          const newGrid = getNewGridWithWallToggled(this.state.grid, row, col)
+          const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
           this.setState({
             grid: newGrid,
             mouseIsPressed: true,
             isWallNode: true,
             currRow: row,
             currCol: col,
-          })
+          });
         }
       } else {
-        this.clearGrid()
+        this.clearGrid();
       }
     }
   }
@@ -156,60 +156,60 @@ export default class PathfindingVisualizer extends Component {
     for (const row of this.state.grid) {
       for (const node of row) {
         const nodeClassName = document.getElementById(
-          `node-${node.row}-${node.col}`,
-        ).className
+          `node-${node.row}-${node.col}`
+        ).className;
         if (
           nodeClassName === 'node node-visited' ||
           nodeClassName === 'node node-shortest-path'
         ) {
-          return false
+          return false;
         }
       }
     }
-    return true
+    return true;
   }
 
   handleMouseEnter(row, col) {
     if (!this.state.isRunning) {
       if (this.state.mouseIsPressed) {
         const nodeClassName = document.getElementById(
-          `node-${row}-${col}`,
-        ).className
+          `node-${row}-${col}`
+        ).className;
         if (this.state.isStartNode) {
           if (nodeClassName !== 'node node-wall') {
             const prevStartNode =
-              this.state.grid[this.state.currRow][this.state.currCol]
-            prevStartNode.isStart = false
+              this.state.grid[this.state.currRow][this.state.currCol];
+            prevStartNode.isStart = false;
             document.getElementById(
-              `node-${this.state.currRow}-${this.state.currCol}`,
-            ).className = 'node'
+              `node-${this.state.currRow}-${this.state.currCol}`
+            ).className = 'node';
 
-            this.setState({ currRow: row, currCol: col })
-            const currStartNode = this.state.grid[row][col]
-            currStartNode.isStart = true
+            this.setState({ currRow: row, currCol: col });
+            const currStartNode = this.state.grid[row][col];
+            currStartNode.isStart = true;
             document.getElementById(`node-${row}-${col}`).className =
-              'node node-start'
+              'node node-start';
           }
-          this.setState({ START_NODE_ROW: row, START_NODE_COL: col })
+          this.setState({ START_NODE_ROW: row, START_NODE_COL: col });
         } else if (this.state.isEndNode) {
           if (nodeClassName !== 'node node-wall') {
             const prevFinishNode =
-              this.state.grid[this.state.currRow][this.state.currCol]
-            prevFinishNode.isEnd = false
+              this.state.grid[this.state.currRow][this.state.currCol];
+            prevFinishNode.isEnd = false;
             document.getElementById(
-              `node-${this.state.currRow}-${this.state.currCol}`,
-            ).className = 'node'
+              `node-${this.state.currRow}-${this.state.currCol}`
+            ).className = 'node';
 
-            this.setState({ currRow: row, currCol: col })
-            const currFinishNode = this.state.grid[row][col]
-            currFinishNode.isEnd = true
+            this.setState({ currRow: row, currCol: col });
+            const currFinishNode = this.state.grid[row][col];
+            currFinishNode.isEnd = true;
             document.getElementById(`node-${row}-${col}`).className =
-              'node node-finish'
+              'node node-finish';
           }
-          this.setState({ FINISH_NODE_ROW: row, FINISH_NODE_COL: col })
+          this.setState({ FINISH_NODE_ROW: row, FINISH_NODE_COL: col });
         } else if (this.state.isWallNode) {
-          const newGrid = getNewGridWithWallToggled(this.state.grid, row, col)
-          this.setState({ grid: newGrid })
+          const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
+          this.setState({ grid: newGrid });
         }
       }
     }
@@ -217,33 +217,37 @@ export default class PathfindingVisualizer extends Component {
 
   handleMouseUp(row, col) {
     if (!this.state.isRunning) {
-      this.setState({ mouseIsPressed: false })
+      this.setState({ mouseIsPressed: false });
       if (this.state.isStartNode) {
-        const isStartNode = !this.state.isStartNode
-        this.setState({ isStartNode, START_NODE_ROW: row, START_NODE_COL: col })
+        const isStartNode = !this.state.isStartNode;
+        this.setState({
+          isStartNode,
+          START_NODE_ROW: row,
+          START_NODE_COL: col,
+        });
       } else if (this.state.isEndNode) {
-        const isEndNode = !this.state.isEndNode
+        const isEndNode = !this.state.isEndNode;
         this.setState({
           isEndNode,
           FINISH_NODE_ROW: row,
           FINISH_NODE_COL: col,
-        })
+        });
       }
-      this.getInitialGrid()
+      this.getInitialGrid();
     }
   }
 
   handleMouseLeave() {
     if (this.state.isStartNode) {
-      const isStartNode = !this.state.isStartNode
-      this.setState({ isStartNode, mouseIsPressed: false })
+      const isStartNode = !this.state.isStartNode;
+      this.setState({ isStartNode, mouseIsPressed: false });
     } else if (this.state.isEndNode) {
-      const isEndNode = !this.state.isEndNode
-      this.setState({ isEndNode, mouseIsPressed: false })
+      const isEndNode = !this.state.isEndNode;
+      this.setState({ isEndNode, mouseIsPressed: false });
     } else if (this.state.isWallNode) {
-      const isWallNode = !this.state.isWallNode
-      this.setState({ isWallNode, mouseIsPressed: false })
-      this.getInitialGrid()
+      const isWallNode = !this.state.isWallNode;
+      this.setState({ isWallNode, mouseIsPressed: false });
+      this.getInitialGrid();
     }
   }
 
@@ -251,40 +255,40 @@ export default class PathfindingVisualizer extends Component {
 
   clearGrid() {
     if (!this.state.isRunning) {
-      const newGrid = this.state.grid.slice()
+      const newGrid = this.state.grid.slice();
       for (const row of newGrid) {
         for (const node of row) {
           let nodeClassName = document.getElementById(
-            `node-${node.row}-${node.col}`,
-          ).className
+            `node-${node.row}-${node.col}`
+          ).className;
           if (
             nodeClassName !== 'node node-start' &&
             nodeClassName !== 'node node-finish' &&
             nodeClassName !== 'node node-wall'
           ) {
             document.getElementById(`node-${node.row}-${node.col}`).className =
-              'node'
-            node.isVisited = false
-            node.distance = Infinity
+              'node';
+            node.isVisited = false;
+            node.distance = Infinity;
             node.distanceToFinishNode =
               Math.abs(this.state.FINISH_NODE_ROW - node.row) +
-              Math.abs(this.state.FINISH_NODE_COL - node.col)
+              Math.abs(this.state.FINISH_NODE_COL - node.col);
           }
           if (nodeClassName === 'node node-finish') {
-            node.isVisited = false
-            node.distance = Infinity
-            node.distanceToFinishNode = 0
+            node.isVisited = false;
+            node.distance = Infinity;
+            node.distanceToFinishNode = 0;
           }
           if (nodeClassName === 'node node-start') {
-            node.isVisited = false
-            node.distance = Infinity
+            node.isVisited = false;
+            node.distance = Infinity;
             node.distanceToFinishNode =
               Math.abs(this.state.FINISH_NODE_ROW - node.row) +
-              Math.abs(this.state.FINISH_NODE_COL - node.col)
-            node.isStart = true
-            node.isWall = false
-            node.previousNode = null
-            node.isNode = true
+              Math.abs(this.state.FINISH_NODE_COL - node.col);
+            node.isStart = true;
+            node.isWall = false;
+            node.previousNode = null;
+            node.isNode = true;
           }
         }
       }
@@ -293,16 +297,16 @@ export default class PathfindingVisualizer extends Component {
 
   clearWalls() {
     if (!this.state.isRunning) {
-      const newGrid = this.state.grid.slice()
+      const newGrid = this.state.grid.slice();
       for (const row of newGrid) {
         for (const node of row) {
           let nodeClassName = document.getElementById(
-            `node-${node.row}-${node.col}`,
-          ).className
+            `node-${node.row}-${node.col}`
+          ).className;
           if (nodeClassName === 'node node-wall') {
             document.getElementById(`node-${node.row}-${node.col}`).className =
-              'node'
-            node.isWall = false
+              'node';
+            node.isWall = false;
           }
         }
       }
@@ -312,59 +316,60 @@ export default class PathfindingVisualizer extends Component {
   /******************** Create Animations ********************/
   visualize(algo) {
     if (!this.state.isRunning) {
-      this.clearGrid()
-      this.toggleIsRunning()
-      const { grid } = this.state
+      this.clearGrid();
+      this.toggleIsRunning();
+      const { grid } = this.state;
       const startNode =
-        grid[this.state.START_NODE_ROW][this.state.START_NODE_COL]
+        grid[this.state.START_NODE_ROW][this.state.START_NODE_COL];
       const endNode =
-        grid[this.state.FINISH_NODE_ROW][this.state.FINISH_NODE_COL]
-      let visitedNodesInOrder
+        grid[this.state.FINISH_NODE_ROW][this.state.FINISH_NODE_COL];
+      let visitedNodesInOrder;
       switch (algo) {
         case 'AStar':
-          visitedNodesInOrder = AStar(grid, startNode, endNode)
-          break
+          visitedNodesInOrder = AStar(grid, startNode, endNode);
+          break;
         case 'BFS':
-          visitedNodesInOrder = bfs(grid, startNode, endNode)
-          break
+          visitedNodesInOrder = bfs(grid, startNode, endNode);
+          break;
         case 'DFS':
-          visitedNodesInOrder = dfs(grid, startNode, endNode)
-          break
-          case 'Dijkstra':
-            visitedNodesInOrder = dijkstra(grid, startNode, endNode)
-            break  
+          visitedNodesInOrder = dfs(grid, startNode, endNode);
+          break;
+        case 'Dijkstra':
+          visitedNodesInOrder = dijkstra(grid, startNode, endNode);
+          break;
         default:
           // should never get here
-          break
+          break;
       }
 
-      const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode)
-      nodesInShortestPathOrder.push('end')
-      this.animate(visitedNodesInOrder, nodesInShortestPathOrder)
+      const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
+      nodesInShortestPathOrder.push('end');
+      this.animate(visitedNodesInOrder, nodesInShortestPathOrder);
     }
   }
 
   animate(visitedNodesInOrder, nodesInShortestPathOrder) {
-    for (let i = 0; i <= visitedNodesInOrder.length; i++) {
-      if (i === visitedNodesInOrder.length) {
+    for (let i = 0; i <= visitedNodesInOrder?.length; i++) {
+      if (i === visitedNodesInOrder?.length) {
         setTimeout(() => {
-          this.animateShortestPath(nodesInShortestPathOrder)
-        }, 10 * i)
-        return
+          this.animateShortestPath(nodesInShortestPathOrder);
+        }, 10 * i);
+        return;
       }
+
       setTimeout(() => {
-        const node = visitedNodesInOrder[i]
+        const node = visitedNodesInOrder[i];
         const nodeClassName = document.getElementById(
-          `node-${node.row}-${node.col}`,
-        ).className
+          `node-${node.row}-${node.col}`
+        ).className;
         if (
           nodeClassName !== 'node node-start' &&
           nodeClassName !== 'node node-finish'
         ) {
           document.getElementById(`node-${node.row}-${node.col}`).className =
-            'node node-visited'
+            'node node-visited';
         }
-      }, 10 * i)
+      }, 10 * i);
     }
   }
 
@@ -373,28 +378,28 @@ export default class PathfindingVisualizer extends Component {
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
       if (nodesInShortestPathOrder[i] === 'end') {
         setTimeout(() => {
-          this.toggleIsRunning()
-        }, i * 50)
+          this.toggleIsRunning();
+        }, i * 50);
       } else {
         setTimeout(() => {
-          const node = nodesInShortestPathOrder[i]
+          const node = nodesInShortestPathOrder[i];
           const nodeClassName = document.getElementById(
-            `node-${node.row}-${node.col}`,
-          ).className
+            `node-${node.row}-${node.col}`
+          ).className;
           if (
             nodeClassName !== 'node node-start' &&
             nodeClassName !== 'node node-finish'
           ) {
             document.getElementById(`node-${node.row}-${node.col}`).className =
-              'node node-shortest-path'
+              'node node-shortest-path';
           }
-        }, i * 40)
+        }, i * 40);
       }
     }
   }
 
   render() {
-    const { grid, mouseIsPressed } = this.state
+    const { grid, mouseIsPressed } = this.state;
     return (
       <div className=' container-fluid'>
         <div className='conatiner-fluid'>
@@ -451,7 +456,7 @@ export default class PathfindingVisualizer extends Component {
               return (
                 <tr key={rowIdx}>
                   {row.map((node, nodeIdx) => {
-                    const { row, col, isEnd, isStart, isWall } = node
+                    const { row, col, isEnd, isStart, isWall } = node;
                     return (
                       <Node
                         key={nodeIdx}
@@ -469,41 +474,41 @@ export default class PathfindingVisualizer extends Component {
                         onMouseUp={() => this.handleMouseUp(row, col)}
                         row={row}
                       ></Node>
-                    )
+                    );
                   })}
                 </tr>
-              )
+              );
             })}
           </tbody>
         </table>
       </div>
-    )
+    );
   }
 }
 
 /******************** Create Walls ********************/
 const getNewGridWithWallToggled = (grid, row, col) => {
   // mouseDown starts to act strange if I don't make newGrid and work off of grid instead.
-  const newGrid = grid.slice()
-  const node = newGrid[row][col]
+  const newGrid = grid.slice();
+  const node = newGrid[row][col];
   if (!node.isStart && !node.isEnd && node.isNode) {
     const newNode = {
       ...node,
       isWall: !node.isWall,
-    }
-    newGrid[row][col] = newNode
+    };
+    newGrid[row][col] = newNode;
   }
-  return newGrid
-}
+  return newGrid;
+};
 
 // Backtracks from the endNode to find the shortest path.
 // Only works when called after the pathfinding methods.
 function getNodesInShortestPathOrder(endNode) {
-  const nodesInShortestPathOrder = []
-  let currentNode = endNode
+  const nodesInShortestPathOrder = [];
+  let currentNode = endNode;
   while (currentNode !== null) {
-    nodesInShortestPathOrder.unshift(currentNode)
-    currentNode = currentNode.previousNode
+    nodesInShortestPathOrder.unshift(currentNode);
+    currentNode = currentNode.previousNode;
   }
-  return nodesInShortestPathOrder
+  return nodesInShortestPathOrder;
 }
