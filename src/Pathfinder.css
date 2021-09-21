@@ -9,3 +9,29 @@
 button {
   margin: 2px;
 }
+
+.container-fluid {
+  display: flex;
+  flex-direction: row;
+}
+.btn {
+  color: white;
+  position: inherit;
+  background-color: rgb(220, 0, 220);
+}
+
+.btn-container {
+  display: flex;
+  flex-direction: row;
+  align-content: space-between;
+  position: absolute;
+  right: 15rem;
+}
+
+.detail-container {
+  display: flex;
+  flex-direction: row;
+}
+.side-container {
+  flex: 0 0 30%;
+}
